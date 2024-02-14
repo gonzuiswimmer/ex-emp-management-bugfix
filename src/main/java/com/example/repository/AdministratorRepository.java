@@ -21,6 +21,19 @@ import com.example.domain.Administrator;
 @Repository
 public class AdministratorRepository {
 
+
+	private static final String FIND_BY_MAILADDRESS_AND_PASSWARD_QUERY = """
+		select 
+			id,
+			name,
+			mail_address,
+			password
+		from 
+			administrators
+		where
+			mail_address=:mail_address AND
+			password=:password
+	""";
 	/**
 	 * Administratorオブジェクトを生成するローマッパー.
 	 */
@@ -58,10 +71,8 @@ public class AdministratorRepository {
 	 * @return 管理者情報 存在しない場合はnullを返します
 	 */
 	public Administrator findByMailAddressAndPassward(String mailAddress, String password) {
-		String sql = "select id,name,mail_address,password from administrators where mail_address= '" + mailAddress
-				+ "' and password='" + password + "'";
-		SqlParameterSource param = new MapSqlParameterSource();
-		List<Administrator> administratorList = template.query(sql, param, ADMINISTRATOR_ROW_MAPPER);
+		SqlParameterSource param = new MapSqlParameterSource().addValue("mail_address", mailAddress).addValue("password", password);
+		List<Administrator> administratorList = template.query(FIND_BY_MAILADDRESS_AND_PASSWARD_QUERY, param, ADMINISTRATOR_ROW_MAPPER);
 		if (administratorList.size() == 0) {
 			return null;
 		}
