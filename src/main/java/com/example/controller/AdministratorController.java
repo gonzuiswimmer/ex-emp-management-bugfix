@@ -77,6 +77,7 @@ public class AdministratorController {
 	@PostMapping("/insert")
 	public String insert(@Validated InsertAdministratorForm form, BindingResult rs, Model model) {
 		if(rs.hasErrors()){
+			System.out.println(rs.getAllErrors());
 			return "administrator/insert";
 		}
 		Administrator administrator = new Administrator();
