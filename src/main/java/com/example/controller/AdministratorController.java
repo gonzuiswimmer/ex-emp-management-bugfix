@@ -82,7 +82,13 @@ public class AdministratorController {
 		Administrator administrator = new Administrator();
 		// フォームからドメインにプロパティ値をコピー
 		BeanUtils.copyProperties(form, administrator);
-		administratorService.insert(administrator);
+		try{
+			administratorService.insert(administrator);
+		} catch(Exception e){
+			System.err.println("SQLのエラーが発生しました");
+			System.out.println(e.getMessage());
+			return "administrator/insert";
+		}
 		return "redirect:/";
 	}
 
