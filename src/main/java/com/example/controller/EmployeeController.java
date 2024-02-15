@@ -17,6 +17,8 @@ import com.example.form.EmployeeSearchForm;
 import com.example.form.UpdateEmployeeForm;
 import com.example.service.EmployeeService;
 
+import jakarta.servlet.http.HttpSession;
+
 /**
  * 従業員情報を操作するコントローラー.
  * 
@@ -29,6 +31,8 @@ public class EmployeeController {
 
 	@Autowired
 	private EmployeeService employeeService;
+	@Autowired
+	private HttpSession session;
 
 	/**
 	 * 使用するフォームオブジェクトをリクエストスコープに格納する.
@@ -59,10 +63,20 @@ public class EmployeeController {
 	 * @param model モデル
 	 * @return 従業員一覧画面
 	 */
+	@SuppressWarnings("unchecked")
 	@GetMapping("/showList")
 	public String showList(Model model) {
-		List<Employee> employeeList = employeeService.showList();
+		List<Employee> employeeList;
+
+		if(session.getAttribute("employeeList") == null){
+			employeeList = employeeService.showList();
+			session.setAttribute("employeeList", employeeList);
+		} else {
+			employeeList = (List<Employee>) session.getAttribute("employeeList");
+		}
+		
 		model.addAttribute("employeeList", employeeList);
+
 		return "employee/list";
 	}
 
@@ -118,7 +132,7 @@ public class EmployeeController {
 				model.addAttribute("notExistEmployee", "該当する従業員は１件もありませんでした");
 			}
 		}
-
+		System.out.println(session.getAttribute("employeeList"));
 		model.addAttribute("employeeList", employeeList);
 		return "employee/list";
 	}
