@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.domain.Employee;
+import com.example.form.EmployeeSearchForm;
 import com.example.form.UpdateEmployeeForm;
 import com.example.service.EmployeeService;
 
@@ -37,6 +38,16 @@ public class EmployeeController {
 	@ModelAttribute
 	public UpdateEmployeeForm setUpForm() {
 		return new UpdateEmployeeForm();
+	}
+
+	/**
+	 * 使用するフォームオブジェクトをリクエストスコープに格納する.
+	 * 
+	 * @return フォーム
+	 */
+	@ModelAttribute
+	public EmployeeSearchForm employeeSearchForm() {
+		return new EmployeeSearchForm();
 	}
 
 	/////////////////////////////////////////////////////
@@ -92,4 +103,24 @@ public class EmployeeController {
 		employeeService.update(employee);
 		return "redirect:/employee/showList";
 	}
+
+	@PostMapping("/search")
+	public String search(EmployeeSearchForm form, Model model) {
+		List<Employee> employeeList;
+
+		if(form.getName() == null){
+			employeeList = employeeService.showList();
+		}else{
+			System.out.println("検索の実行");
+			employeeList = employeeService.search(form.getName());
+			if(employeeList.size() == 0){
+				employeeList = employeeService.showList();
+				model.addAttribute("notExistEmployee", "該当する従業員は１件もありませんでした");
+			}
+		}
+
+		model.addAttribute("employeeList", employeeList);
+		return "employee/list";
+	}
+	
 }

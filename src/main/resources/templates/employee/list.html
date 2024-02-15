@@ -94,6 +94,15 @@
         <div
           class="table-responsive col-lg-offset-2 col-lg-8 col-md-offset-2 col-md-8 col-sm-12 col-xs-12"
         >
+        <form action="" th:action="@{/employee/search}" method="post" th:object="${employeeSearchForm}">
+          <input type="text" name="name" th:field="*{name}">
+          <button type="submit">検索</button>
+        </form>
+        <div th:if="${notExistEmployee}" class="alert alert-danger">
+          <p th:text="${notExistEmployee}">
+            custom_message
+          </p>
+        </div>
           <!-- ここから上を編集する必要はありません -->
 
           <!-- ここにモックのtable要素を貼り付けます -->
